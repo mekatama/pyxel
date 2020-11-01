@@ -1,4 +1,4 @@
- #画面遷移
+ #fruitの種類を増やす
 from random import randint
 import pyxel
 
@@ -19,8 +19,8 @@ class App:
         # 初期配置
         self.player_x = 80
         self.player_y = 60
-        # fruit初期配置 x座標 y座標 表示flag on を4個用意
-        self.fruit = [(i * 60, randint(0, 104), True) for i in range(4)]
+        # fruit初期配置 x座標 y座標 表示flag on 種類(0と1)を4個用意
+        self.fruit = [(i * 60, randint(0, 104), True, randint(0, 1)) for i in range(4)]
 
         #BGM再生(MUSIC 0番をloop再生)
         pyxel.playm(0, loop = True)
@@ -68,12 +68,17 @@ class App:
         if pyxel.btn(pyxel.KEY_DOWN):
             self.player_y = min(self.player_y + 2, pyxel.height - 16)
 
-    def update_fruit(self, x, y, is_active):
+    def update_fruit(self, x, y, is_active, ver):
         #衝突判定(playerとfruitの座標の絶対値から衝突しているか判定している)
         if is_active and abs(x - self.player_x) < 12 and abs(y - self.player_y) < 12:
-            is_active = False   #表示を消す
-            self.score += 10    #scoe加算
-            pyxel.play(1,0,loop = False)     #SE再生(CH 1,SOUND 0,単発再生)
+            #種別で分岐
+            if ver == 0:
+                is_active = False   #表示を消す
+                self.score += 10    #scoe加算
+                pyxel.play(1,0,loop = False)     #SE再生(CH 1,SOUND 0,単発再生)
+            elif ver == 1:
+                is_active = False   #表示を消す
+                pyxel.play(1,2,loop = False)     #SE再生(CH 1,SOUND 0,単発再生)
             
         # 左に移動
         x -= 2
@@ -86,9 +91,11 @@ class App:
             y = randint(0, 104)
             # 表示flag on
             is_active = True
+            # 種類再設定(ランダム)
+            ver = randint(0, 1)
 
         # 返り値を設定
-        return (x, y, is_active)
+        return (x, y, is_active, ver)
 
     def draw(self):
         # 画面クリア 0は黒
@@ -116,8 +123,11 @@ class App:
         pyxel.blt(self.player_x, self.player_y, 0, 0, 0, 16, 16, 0)
 
         # draw fruits
-        for x, y, is_active in self.fruit:
+        for x, y, is_active, ver in self.fruit:
             if is_active:
-                pyxel.blt(x, y, 0, 16, 0, 16, 16, 0)
-
+                #verを見て画像変更
+                if ver == 0:
+                    pyxel.blt(x, y, 0, 16, 0, 16, 16, 0)
+                elif ver == 1:
+                    pyxel.blt(x, y, 0, 32, 0, 16, 16, 0)
 App()
