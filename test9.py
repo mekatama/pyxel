@@ -1,10 +1,11 @@
- #fruitの種類を増やす
+ #gameover作る
 from random import randint
 import pyxel
 
 #画面遷移用の変数
-SCENE_TITLE = 0	#タイトル画面
-SCENE_PLAY = 1	#ゲーム画面
+SCENE_TITLE = 0	    #タイトル画面
+SCENE_PLAY = 1	    #ゲーム画面
+SCENE_GAMEOVER = 2  #ゲームオーバー画面
 
 class App:
     def __init__(self):
@@ -36,6 +37,8 @@ class App:
             self.update_title_scene()
         elif self.scene == SCENE_PLAY:
             self.update_play_scene()
+        elif self.scene == SCENE_GAMEOVER:
+            self.update_gameover_scene()
 
 
     #タイトル画面処理用update
@@ -55,6 +58,12 @@ class App:
             # つまり、初期化で設定したデータをタプル型にしてupdate_fruit関数に渡しているっぽい
             self.fruit[i] = self.update_fruit(*v)
 
+    #ゲームオーバー画面処理用update
+    def update_gameover_scene(self):
+        #ENTERでタイトル画面に遷移
+        if pyxel.btnp(pyxel.KEY_ENTER):
+            self.score = 0 #得点初期化
+            self.scene = SCENE_TITLE
 
     def update_player(self):
         # key入力
@@ -79,6 +88,7 @@ class App:
             elif ver == 1:
                 is_active = False   #表示を消す
                 pyxel.play(1,2,loop = False)     #SE再生(CH 1,SOUND 0,単発再生)
+                self.scene = SCENE_GAMEOVER
             
         # 左に移動
         x -= 2
@@ -106,6 +116,8 @@ class App:
             self.draw_title_scene()
         elif self.scene == SCENE_PLAY:
             self.draw_play_scene()
+        elif self.scene == SCENE_GAMEOVER:
+            self.draw_gameover_scene()
 
         #score表示用に整形(format関数の文字列操作を利用)
         s = "Score:{:>4}".format(self.score)
@@ -130,4 +142,9 @@ class App:
                     pyxel.blt(x, y, 0, 16, 0, 16, 16, 0)
                 elif ver == 1:
                     pyxel.blt(x, y, 0, 32, 0, 16, 16, 0)
+
+    #ゲームオーバー画面描画用update
+    def draw_gameover_scene(self):
+        pyxel.text(55, 40, "GAME OVER", 7)
+        pyxel.text(50, 80, "- PRESS ENTER -", 7)
 App()
