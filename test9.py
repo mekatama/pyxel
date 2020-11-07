@@ -25,7 +25,7 @@ class App:
         self.fruit = [(i * 60, randint(0, 104), True, randint(0, 1)) for i in range(4)]
 
         #BGM再生(MUSIC 0番をloop再生)
-        pyxel.playm(0, loop = True)
+        pyxel.playm(1, loop = True)
         # 実行開始 更新関数 描画関数
         pyxel.run(self.update, self.draw)
 
@@ -46,6 +46,8 @@ class App:
     def update_title_scene(self):
         #ENTERでゲーム画面に遷移
         if pyxel.btnp(pyxel.KEY_ENTER):
+            #BGM再生(MUSIC 0番をloop再生)
+            pyxel.playm(0, loop = True)
             self.scene = SCENE_PLAY
 
     #ゲーム画面処理用update
@@ -66,6 +68,8 @@ class App:
     def update_gameover_scene(self):
         #ENTERでタイトル画面に遷移
         if pyxel.btnp(pyxel.KEY_ENTER):
+            #BGM再生(MUSIC 0番をloop再生)
+            pyxel.playm(1, loop = True)
             self.score = 0 #得点初期化
             self.scene = SCENE_TITLE
 
@@ -92,6 +96,8 @@ class App:
             elif ver == 1:
                 is_active = False   #表示を消す
                 pyxel.play(1,2,loop = False)     #SE再生(CH 1,SOUND 0,単発再生)
+                #BGM再生(MUSIC 0番をloop再生)
+                pyxel.playm(2, loop = False)
                 self.scene = SCENE_GAMEOVER
             
         # 左に移動
