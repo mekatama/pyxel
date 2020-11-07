@@ -1,4 +1,4 @@
- #gameover作る
+ #ハイスコア作る
 from random import randint
 import pyxel
 
@@ -17,6 +17,7 @@ class App:
         self.scene = SCENE_TITLE
         #得点初期化
         self.score = 0
+        self.highscore = 0
         # 初期配置
         self.player_x = 80
         self.player_y = 60
@@ -49,6 +50,9 @@ class App:
 
     #ゲーム画面処理用update
     def update_play_scene(self):
+        #ハイスコア判定
+        if self.highscore <= self.score:
+            self.highscore = self.score
 
         self.update_player()
 
@@ -122,7 +126,11 @@ class App:
         #score表示用に整形(format関数の文字列操作を利用)
         s = "Score:{:>4}".format(self.score)
         #text表示(x座標、y座標、文字列、color)
-        pyxel.text(5, 4, s, 7)
+        pyxel.text(5, 10, s, 7)
+        #highscore表示用に整形(format関数の文字列操作を利用)
+        hs = "HighScore:{:>4}".format(self.highscore)
+        #text表示(x座標、y座標、文字列、color)
+        pyxel.text(5, 4, hs, 7)
 
     #タイトル画面描画用update
     def draw_title_scene(self):
