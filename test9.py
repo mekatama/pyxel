@@ -1,4 +1,4 @@
- #ハイスコア作る
+ #徐々に速くしたい
 from random import randint
 import pyxel
 
@@ -21,6 +21,12 @@ class App:
         # 初期配置
         self.player_x = 80
         self.player_y = 60
+        # 初期追加速度
+        self.addspeed = 0
+        # 速度制御用flag
+        self.isSpeedUp = False
+        # アイテム取得数
+        self.getitem = 0
         # fruit初期配置 x座標 y座標 表示flag on 種類(0と1)を4個用意
         self.fruit = [(i * 60, randint(0, 104), True, randint(0, 1)) for i in range(4)]
 
@@ -55,6 +61,16 @@ class App:
         #ハイスコア判定
         if self.highscore <= self.score:
             self.highscore = self.score
+
+        # アイテム取得で速度制御 三つ取得ごとに速度Up
+        if self.getitem % 3 == 0:
+            if self.isSpeedUp == False:
+                self.addspeed += 1
+                self.isSpeedUp = True
+                print("up処理")
+        else:
+            # isSpeedUpをFalseにする
+            self.isSpeedUp = False
 
         self.update_player()
 
@@ -92,16 +108,22 @@ class App:
             if ver == 0:
                 is_active = False   #表示を消す
                 self.score += 10    #scoe加算
+                self.getitem += 1   #アイテム取得数加算
                 pyxel.play(1,0,loop = False)     #SE再生(CH 1,SOUND 0,単発再生)
             elif ver == 1:
                 is_active = False   #表示を消す
                 pyxel.play(1,2,loop = False)     #SE再生(CH 1,SOUND 0,単発再生)
-                #BGM再生(MUSIC 0番をloop再生)
+                # BGM再生(MUSIC 0番をloop再生)
                 pyxel.playm(2, loop = False)
+                # いろいろ初期化
+                self.getitem = 0
+                self.addspeed = 0
+                self.isSpeedUp == False
+                # 画面移動
                 self.scene = SCENE_GAMEOVER
             
         # 左に移動
-        x -= 2
+        x -= 1 + self.addspeed
 
         # 画面外に出たら
         if x < -40:
